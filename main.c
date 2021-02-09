@@ -80,6 +80,7 @@ bool checkSiblingFound(stack* symbols, char inputVal) {
     (inputVal == '}' && topVal == '{') ||
     (inputVal == ']' && topVal == '[') ||
     (inputVal == '>' && topVal == '<')) {
+    pop(symbols);
     return true;
   }
   return false;
@@ -89,7 +90,7 @@ int processInput(stack* symbols, char* input) {
   size_t i = 0;
   bool siblingFound;
   while (input[i] != '\0') {
-    printf("input[i]: %c ", input[i]);
+    // printf("input[i]: %c ", input[i]);
     
     if (
       input[i] == '(' ||
@@ -102,14 +103,15 @@ int processInput(stack* symbols, char* input) {
       input[i] == '}' ||
       input[i] == ']' ||
       input[i] == '>') {
+      if (is_empty(symbols)) return 2;
       siblingFound = checkSiblingFound(symbols, input[i]);
       if (!siblingFound) return 1;
-      
     }
 
     i++;
   }
-  printf("\n");
+  // printf("\n");
+  if (!is_empty(symbols)) return 3;
   return 0;
 }
 
@@ -147,7 +149,7 @@ int main (int argc, char** argv) {
  
    /*You can remove/move this print statement based on your code structure */
    result = processInput(&symbols, input);
-
+   printf("result: %d\n", result);
    /* run the algorithm to determine is input is balanced */
    clear(&symbols);
  }
