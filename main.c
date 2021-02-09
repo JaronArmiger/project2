@@ -26,6 +26,20 @@ void grow(stack* symbols) {
   symbols->size += 4;
 }
 
+bool is_empty(stack* symbols) {
+  bool hasElements = false;
+  int i = symbols->top;
+
+  while (i >= 0) {
+    if (symbols->darr[i] != '\0') {
+      hasElements = true;
+      break;
+    }
+    i--;
+  }
+  return !hasElements;
+}
+
 void push(stack* symbols, char newVal) {
   if (symbols->size - 1 == symbols->top) {
     grow(symbols);
@@ -35,29 +49,55 @@ void push(stack* symbols, char newVal) {
   symbols->top++;
 }
 
+
+void pop(stack* symbols) {
+
+}
+
 void clear(stack* symbols) {
   free(symbols->darr);
   init(symbols);
 }
 
-void processInput(stack* symbols, char* input) {
+int processInput(stack* symbols, char* input) {
   size_t i = 0;
+  bool siblingFound;
   while (input[i] != '\0') {
     printf("input[i]: %c ", input[i]);
-
-
     
+    if (
+      input[i] == '(' ||
+      input[i] == '{' ||
+      input[i] == '[' ||
+      input[i] == '<') {
+
+    } else if (
+      input[i] == ')' ||
+      input[i] == '}' ||
+      input[i] == ']' ||
+      input[i] == '>') {
+
+    }
+
     i++;
   }
   printf("\n");
+  return 0;
 }
 
 int main (int argc, char** argv) {
   stack symbols;
  char input[301];
+ int result;
 
   init(&symbols);
   printf("symbols.size %d\n", symbols.size);
+
+  if (is_empty(&symbols)) {
+    printf("symbols is empty\n");
+  } else {
+    printf("symbols is not empty\n");
+  }
  /* set up an infinite loop */
  while (1)
  {
@@ -78,7 +118,7 @@ int main (int argc, char** argv) {
      break;
  
    /*You can remove/move this print statement based on your code structure */
-   processInput(&symbols, input);
+   result = processInput(&symbols, input);
 
    /* run the algorithm to determine is input is balanced */
    clear(&symbols);
@@ -88,3 +128,4 @@ int main (int argc, char** argv) {
  printf ("\nGoodbye\n");
  return 0;
 }
+
