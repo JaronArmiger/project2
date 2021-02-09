@@ -104,7 +104,9 @@ void clear(stack* symbols) {
 
 // accepts pointer to symbols stack, an input char
 // and the debugMode boolean
-
+// checks if inputVal's sibling is on the top of the stack
+// if yes, it pops it off the stack and returns true
+// else return false
 bool checkSiblingFound(stack* symbols, char inputVal, bool debugMode) {
   if (is_empty(symbols)) return false;
   char topVal = symbols->darr[symbols->top];
@@ -121,7 +123,9 @@ bool checkSiblingFound(stack* symbols, char inputVal, bool debugMode) {
   return false;
 }
 
-
+// accepts inputVal char
+// if inputVal is any of the closing symbols
+// its opening symbol is returned
 char getMissingSymbol(char inputVal) {
   if (inputVal == ')') {
     return '(';
@@ -136,6 +140,8 @@ char getMissingSymbol(char inputVal) {
 }
 
 // accepts pointer to symbols stack
+// checks the top value in symbols
+// and returns its sibling
 char getExpectedSymbol(stack* symbols) {
   char topVal = symbols->darr[symbols->top];
   if (topVal == '(') {
@@ -150,7 +156,14 @@ char getExpectedSymbol(stack* symbols) {
   return '\0';
 }
 
-// accepts pointer to symbols stack
+// accepts pointer to symbols stack, input string,
+// an int pointer to problemIndex, a char pointer to problemChar
+// and the debugMode boolean
+// iterates through the inputString until end of input
+// if an opening symbol is found, it is pushed onto the symbols stack
+// if a closing symbol is found, it is compared to the top of the stack
+// this function returns an integer indicating whether the input was balanced
+// and what the issue was if any
 int processInput(
   stack* symbols,
   char* input,
@@ -195,6 +208,8 @@ int processInput(
   return 0;
 }
 
+// accepts input string
+// prints it
 void printInputString(char* input) {
   size_t i = 0;
   while (input[i] != '\0') {
@@ -204,8 +219,13 @@ void printInputString(char* input) {
   printf("\n");
 }
 
+// accepts input string, result int,
+// problemIndex int, and problemChar char
+// reports to the user whether their input was balanced
+// and where the problem lies if there is one
 void printResultInfo(char* input, int result, int problemIndex, char problemChar) {
   if (result == 0) {
+    printInputString(input);
     printf("Expression is balanced\n");
   } else if (result == 1) {
     printf("Unbalanced expression. Error 1: expecting a different closing symbol\n");
