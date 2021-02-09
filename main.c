@@ -1,3 +1,6 @@
+// Author: Jaron Armiger
+// Course: CS 211
+// Description: a program that checks if input symbols are properly balanced
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,12 +12,16 @@ typedef struct Stack {
   int size;
 } stack;
 
+// accepts pointer to symbols stack
+// initializes is with size 4
 void init(stack* symbols) {
   symbols->darr = (char*) malloc(sizeof(char) * 4);
   symbols->top = -1;
   symbols->size = 4;
 }
 
+// accepts pointer to symbols stack and debugMode boolean
+// increases the size of symbols' dynamic array by 4
 void grow(stack* symbols, bool debugMode) {
   int i = 0;
   char* temp;
@@ -34,6 +41,10 @@ void grow(stack* symbols, bool debugMode) {
   symbols->size += 4;
 }
 
+// accepts pointer to symbols stack
+// iterates through symbols' dynamic array
+// if any values are found, true is returned
+// else false
 bool is_empty(stack* symbols) {
   bool hasElements = false;
   int i = symbols->top;
@@ -48,6 +59,10 @@ bool is_empty(stack* symbols) {
   return !hasElements;
 }
 
+// accepts pointer to symbols stack, the char to be added
+// and the debugMode boolean
+// if symbols is full, grow it
+// then add newChar and update the top index
 void push(stack* symbols, char newVal, bool debugMode) {
   if (symbols->size - 1 == symbols->top) {
     grow(symbols, debugMode);
@@ -57,7 +72,9 @@ void push(stack* symbols, char newVal, bool debugMode) {
   symbols->top++;
 }
 
-
+// accepts pointer to symbols stack
+// if symbols is not empty, return the top
+// value and decrement the top index
 char pop(stack* symbols) {
   char val = '\0';
   if (is_empty(symbols)) return val;
@@ -67,6 +84,8 @@ char pop(stack* symbols) {
   return val;
 }
 
+// accepts pointer to symbols stack
+// if symbols is not empty, return the top value
 char top(stack* symbols) {
   char val = '\0';
   if (is_empty(symbols)) return val;
@@ -74,10 +93,17 @@ char top(stack* symbols) {
   return val;
 }
 
+// accepts pointer to symbols stack
+// free the existing dynamic array, then reallocate
+// an empty one of size 4, and update symbols'
+// size and top index
 void clear(stack* symbols) {
   free(symbols->darr);
   init(symbols);
 }
+
+// accepts pointer to symbols stack, an input char
+// and the debugMode boolean
 
 bool checkSiblingFound(stack* symbols, char inputVal, bool debugMode) {
   if (is_empty(symbols)) return false;
@@ -95,6 +121,7 @@ bool checkSiblingFound(stack* symbols, char inputVal, bool debugMode) {
   return false;
 }
 
+
 char getMissingSymbol(char inputVal) {
   if (inputVal == ')') {
     return '(';
@@ -108,6 +135,7 @@ char getMissingSymbol(char inputVal) {
   return '\0';
 }
 
+// accepts pointer to symbols stack
 char getExpectedSymbol(stack* symbols) {
   char topVal = symbols->darr[symbols->top];
   if (topVal == '(') {
@@ -122,7 +150,7 @@ char getExpectedSymbol(stack* symbols) {
   return '\0';
 }
 
-
+// accepts pointer to symbols stack
 int processInput(
   stack* symbols,
   char* input,
