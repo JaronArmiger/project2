@@ -15,13 +15,21 @@ void init(stack* symbols) {
   symbols->size = 4;
 }
 
-void grow(stack* symbols) {
+void grow(stack* symbols, bool debugMode) {
+  int i = 0;
   char* temp;
   temp = symbols->darr;
   symbols->darr = (char*) malloc(sizeof(char) * (symbols->size + 4));
-
-  for (int i = 0; i < symbols->size; i++) {
+  
+  for (i = 0; i < symbols->size; i++) {
     symbols->darr[i] = temp[i];
+  }
+  if (debugMode) {
+    printf(
+      "Stack size increased from %d to %d, a total of %d values were copied \n",
+      symbols->size,
+      symbols->size + 4,
+      i);
   }
   symbols->size += 4;
 }
@@ -40,9 +48,9 @@ bool is_empty(stack* symbols) {
   return !hasElements;
 }
 
-void push(stack* symbols, char newVal) {
+void push(stack* symbols, char newVal, bool debugMode) {
   if (symbols->size - 1 == symbols->top) {
-    grow(symbols);
+    grow(symbols, debugMode);
   }
 
   symbols->darr[symbols->top +1] = newVal;
@@ -71,16 +79,17 @@ void clear(stack* symbols) {
   init(symbols);
 }
 
-bool checkSiblingFound(stack* symbols, char inputVal) {
+bool checkSiblingFound(stack* symbols, char inputVal, bool debugMode) {
   if (is_empty(symbols)) return false;
   char topVal = symbols->darr[symbols->top];
-
+  char poppedVal;
   if (
     (inputVal == ')' && topVal == '(') ||
     (inputVal == '}' && topVal == '{') ||
     (inputVal == ']' && topVal == '[') ||
     (inputVal == '>' && topVal == '<')) {
-    pop(symbols);
+    poppedVal = pop(symbols);
+    if (debugMode) printf("Character %c was popped from the stack \n", poppedVal);
     return true;
   }
   return false;
@@ -118,7 +127,8 @@ int processInput(
   stack* symbols,
   char* input,
   int *problemIndex,
-  char *problemChar) {
+  char *problemChar,
+  bool debugMode) {
   size_t i = 0;
   bool siblingFound;
   while (input[i] != '\0') {
@@ -129,7 +139,8 @@ int processInput(
       input[i] == '{' ||
       input[i] == '[' ||
       input[i] == '<') {
-      push(symbols, input[i]);
+      push(symbols, input[i], debugMode);
+      if (debugMode) printf("Character %c was pushed into the stack \n", input[i]);
     } else if (
       input[i] == ')' ||
       input[i] == '}' ||
@@ -139,7 +150,7 @@ int processInput(
         *problemChar = getMissingSymbol(input[i]);
         return 2;
       }
-      siblingFound = checkSiblingFound(symbols, input[i]);
+      siblingFound = checkSiblingFound(symbols, input[i], debugMode);
       if (!siblingFound) {
         *problemChar = getExpectedSymbol(symbols);
         return 1;
@@ -192,15 +203,13 @@ int main (int argc, char** argv) {
   int result;
   int problemIndex;
   char problemChar;
+  bool debugMode = false;
+
+  if (argc > 1 && (strcmp(argv[1], "-d") == 0)) {
+    debugMode = true;
+  }
 
   init(&symbols);
-  printf("symbols.size %d\n", symbols.size);
-
-  if (is_empty(&symbols)) {
-    printf("symbols is empty\n");
-  } else {
-    printf("symbols is not empty\n");
-  }
  /* set up an infinite loop */
  while (1)
  {
@@ -221,7 +230,7 @@ int main (int argc, char** argv) {
      break;
  
    /*You can remove/move this print statement based on your code structure */
-   result = processInput(&symbols, input, &problemIndex, &problemChar);
+   result = processInput(&symbols, input, &problemIndex, &problemChar, debugMode);
    // printf("problemIndex: %d\n", problemIndex);
    // printf("problemChar: %c\n", problemChar);
    printResultInfo(input, result, problemIndex, problemChar);
@@ -233,4 +242,3 @@ int main (int argc, char** argv) {
  printf ("\nGoodbye\n");
  return 0;
 }
-
