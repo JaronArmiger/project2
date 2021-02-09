@@ -86,12 +86,12 @@ bool checkSiblingFound(stack* symbols, char inputVal) {
   return false;
 }
 
-int processInput(stack* symbols, char* input) {
+int processInput(stack* symbols, char* input, int *lastIndex) {
   size_t i = 0;
   bool siblingFound;
   while (input[i] != '\0') {
     // printf("input[i]: %c ", input[i]);
-    
+    *lastIndex = i;
     if (
       input[i] == '(' ||
       input[i] == '{' ||
@@ -115,10 +115,38 @@ int processInput(stack* symbols, char* input) {
   return 0;
 }
 
+void printInputString(char* input) {
+  size_t i = 0;
+  while (input[i] != '\0') {
+    printf("%c", input[i]);
+    i++;
+  }
+  printf("\n");
+}
+
+void printResultInfo(char* input, int result, int problemIndex) {
+  if (result == 0) {
+    printf("Expression is balanced\n");
+  } else if (result == 1) {
+    printf("Unbalanced expression. Error 1: expecting a different closing symbol\n");
+    printInputString(input);
+    printf("%*c", problemIndex + 1, '^');
+  } else if (result == 2) {
+    printf("Unbalanced expression. Error 2: missing an opening symbol\n");
+    printInputString(input);
+    printf("%*c", problemIndex + 1, '^');
+  } else if (result == 3) {
+    printf("Unbalanced expression. Error 3: missing a closing symbol\n");
+    printInputString(input);
+    printf("%*c", problemIndex + 1, '^');
+  }
+}
+
 int main (int argc, char** argv) {
   stack symbols;
- char input[301];
- int result;
+  char input[301];
+  int result;
+  int problemIndex;
 
   init(&symbols);
   printf("symbols.size %d\n", symbols.size);
@@ -148,8 +176,9 @@ int main (int argc, char** argv) {
      break;
  
    /*You can remove/move this print statement based on your code structure */
-   result = processInput(&symbols, input);
-   printf("result: %d\n", result);
+   result = processInput(&symbols, input, &problemIndex);
+   printf("problemIndex: %d\n", problemIndex);
+   printResultInfo(input, result, problemIndex);
    /* run the algorithm to determine is input is balanced */
    clear(&symbols);
  }
