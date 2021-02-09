@@ -3,6 +3,33 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+typedef struct Stack {
+  char* darr;
+  int top;
+  int size;
+} stack;
+
+void init(stack* symbols) {
+  symbols->darr = (char*) malloc(sizeof(char) * 4);
+  symbols->top = -1;
+  symbols->size = 4;
+}
+
+void grow(stack* symbols) {
+  char* temp;
+  temp = symbols->darr;
+  symbols->darr = (char*) malloc(sizeof(char) (symbols->size + 4));
+
+  for (int i = 0; i < symbols->size; i++) {
+    symbols->darr[i] = temp[i];
+  }
+  symbols->size += 4;
+}
+
+void push(stack* symbols) {
+  
+}
+
 int main (int argc, char** argv)
 {
  char input[301];
