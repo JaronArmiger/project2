@@ -50,13 +50,39 @@ void push(stack* symbols, char newVal) {
 }
 
 
-void pop(stack* symbols) {
+char pop(stack* symbols) {
+  char val = '\0';
+  if (is_empty(symbols)) return val;
+  val = symbols->darr[symbols->top];
+  symbols->darr[symbols->top] = '\0';
+  symbols->top--;
+  return val;
+}
 
+char top(stack* symbols) {
+  char val = '\0';
+  if (is_empty(symbols)) return val;
+  val = symbols->darr[symbols->top];
+  return val;
 }
 
 void clear(stack* symbols) {
   free(symbols->darr);
   init(symbols);
+}
+
+bool checkSiblingFound(stack* symbols, char inputVal) {
+  if (is_empty(symbols)) return false;
+  char topVal = symbols->darr[symbols->top];
+
+  if (
+    (inputVal == ')' && topVal == '(') ||
+    (inputVal == '}' && topVal == '{') ||
+    (inputVal == ']' && topVal == '[') ||
+    (inputVal == '>' && topVal == '<')) {
+    return true;
+  }
+  return false;
 }
 
 int processInput(stack* symbols, char* input) {
@@ -70,13 +96,15 @@ int processInput(stack* symbols, char* input) {
       input[i] == '{' ||
       input[i] == '[' ||
       input[i] == '<') {
-
+      push(symbols, input[i]);
     } else if (
       input[i] == ')' ||
       input[i] == '}' ||
       input[i] == ']' ||
       input[i] == '>') {
-
+      siblingFound = checkSiblingFound(symbols, input[i]);
+      if (!siblingFound) return 1;
+      
     }
 
     i++;
