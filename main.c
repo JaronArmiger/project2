@@ -165,21 +165,24 @@ void printInputString(char* input) {
   printf("\n");
 }
 
-void printResultInfo(char* input, int result, int problemIndex) {
+void printResultInfo(char* input, int result, int problemIndex, char problemChar) {
   if (result == 0) {
     printf("Expression is balanced\n");
   } else if (result == 1) {
     printf("Unbalanced expression. Error 1: expecting a different closing symbol\n");
     printInputString(input);
     printf("%*c", problemIndex + 1, '^');
+    printf(" expecting %c", problemChar);
   } else if (result == 2) {
     printf("Unbalanced expression. Error 2: missing an opening symbol\n");
     printInputString(input);
     printf("%*c", problemIndex + 1, '^');
+    printf(" missing %c", problemChar);
   } else if (result == 3) {
     printf("Unbalanced expression. Error 3: missing a closing symbol\n");
     printInputString(input);
     printf("%*c", problemIndex + 1, '^');
+    printf(" missing %c", problemChar);
   }
 }
 
@@ -219,9 +222,9 @@ int main (int argc, char** argv) {
  
    /*You can remove/move this print statement based on your code structure */
    result = processInput(&symbols, input, &problemIndex, &problemChar);
-   printf("problemIndex: %d\n", problemIndex);
-   printf("problemChar: %c\n", problemChar);
-   printResultInfo(input, result, problemIndex);
+   // printf("problemIndex: %d\n", problemIndex);
+   // printf("problemChar: %c\n", problemChar);
+   printResultInfo(input, result, problemIndex, problemChar);
    /* run the algorithm to determine is input is balanced */
    clear(&symbols);
  }
