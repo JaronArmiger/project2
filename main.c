@@ -96,18 +96,21 @@ char getMissingSymbol(char inputVal) {
   }  else if (inputVal == '>') {
     return '<';
   }
+  return '\0';
 }
 
-char getExpectedSymbol(char inputVal) {
-  if (inputVal == '(') {
+char getExpectedSymbol(stack* symbols) {
+  char topVal = symbols->darr[symbols->top];
+  if (topVal == '(') {
     return ')';
-  } else if (inputVal == '[') {
+  } else if (topVal == '[') {
     return ']';
-  }  else if (inputVal == '{') {
+  }  else if (topVal == '{') {
     return '}';
-  }  else if (inputVal == '<') {
+  }  else if (topVal == '<') {
     return '>';
   }
+  return '\0';
 }
 
 int processInput(
@@ -137,7 +140,7 @@ int processInput(
       }
       siblingFound = checkSiblingFound(symbols, input[i]);
       if (!siblingFound) {
-        *problemChar = getExpectedSymbol(input[i]);
+        *problemChar = getExpectedSymbol(symbols);
         return 1;
       }
     }
