@@ -86,12 +86,40 @@ bool checkSiblingFound(stack* symbols, char inputVal) {
   return false;
 }
 
-int processInput(stack* symbols, char* input, int *lastIndex) {
+char getMissingSymbol(char inputVal) {
+  if (inputVal == ')') {
+    return '(';
+  } else if (inputVal == ']') {
+    return '[';
+  }  else if (inputVal == '}') {
+    return '{';
+  }  else if (inputVal == '>') {
+    return '<';
+  }
+}
+
+char getExpectedSymbol(char inputVal) {
+  if (inputVal == '(') {
+    return ')';
+  } else if (inputVal == '[') {
+    return ']';
+  }  else if (inputVal == '{') {
+    return '}';
+  }  else if (inputVal == '<') {
+    return '>';
+  }
+}
+
+int processInput(
+  stack* symbols,
+  char* input,
+  int *problemIndex,
+  char *problemChar) {
   size_t i = 0;
   bool siblingFound;
   while (input[i] != '\0') {
     // printf("input[i]: %c ", input[i]);
-    *lastIndex = i;
+    *problemIndex = i;
     if (
       input[i] == '(' ||
       input[i] == '{' ||
@@ -103,15 +131,24 @@ int processInput(stack* symbols, char* input, int *lastIndex) {
       input[i] == '}' ||
       input[i] == ']' ||
       input[i] == '>') {
-      if (is_empty(symbols)) return 2;
+      if (is_empty(symbols)) {
+        *problemChar = getMissingSymbol(input[i]);
+        return 2;
+      }
       siblingFound = checkSiblingFound(symbols, input[i]);
-      if (!siblingFound) return 1;
+      if (!siblingFound) {
+        *problemChar = getExpectedSymbol(input[i]);
+        return 1;
+      }
     }
 
     i++;
   }
   // printf("\n");
-  if (!is_empty(symbols)) return 3;
+  if (!is_empty(symbols)) {
+    *problemChar = getMissingSymbol(input[i - 1]);
+    return 3;
+  }
   return 0;
 }
 
@@ -147,6 +184,7 @@ int main (int argc, char** argv) {
   char input[301];
   int result;
   int problemIndex;
+  char problemChar;
 
   init(&symbols);
   printf("symbols.size %d\n", symbols.size);
@@ -176,8 +214,9 @@ int main (int argc, char** argv) {
      break;
  
    /*You can remove/move this print statement based on your code structure */
-   result = processInput(&symbols, input, &problemIndex);
+   result = processInput(&symbols, input, &problemIndex, &problemChar);
    printf("problemIndex: %d\n", problemIndex);
+   printf("problemChar: %c\n", problemChar);
    printResultInfo(input, result, problemIndex);
    /* run the algorithm to determine is input is balanced */
    clear(&symbols);
