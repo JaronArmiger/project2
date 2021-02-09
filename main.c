@@ -113,6 +113,7 @@ char getExpectedSymbol(stack* symbols) {
   return '\0';
 }
 
+
 int processInput(
   stack* symbols,
   char* input,
@@ -149,7 +150,7 @@ int processInput(
   }
   // printf("\n");
   if (!is_empty(symbols)) {
-    *problemChar = getMissingSymbol(input[i - 1]);
+    *problemChar = getExpectedSymbol(symbols);
     return 3;
   }
   return 0;
